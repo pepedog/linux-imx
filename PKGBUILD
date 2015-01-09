@@ -10,7 +10,7 @@ buildarch=4
 pkgbase=linux-imx6-utilite-dt
 pkgname=('linux-imx6-utilite-dt' 'linux-headers-imx6-utilite-dt')
 # pkgname=linux-custom       # Build kernel with a different name
-_commit=4f4c534c8e6eac1f7e5d5e91ed8c76f3537bd553
+_commit=458352c292c34ce86659964aee832beaa09c5fda
 _srcname=linux-imx6-3.14-${_commit}
 _kernelname=${pkgname#linux}
 _basekernel=3.14
@@ -31,7 +31,7 @@ source=("https://github.com/pepedog/linux-imx6-3.14/archive/${_commit}.tar.gz"
         '002_cec.patch'
         '003_cec.patch')
 
-md5sums=('b6912b4425acc4d32e0881cb64c206b3'
+md5sums=('ce27a8a8f5357c01090c6ba5895ed8e6'
          'ddf7876487c876f6676ef0e050e9d204'
          'SKIP'
          '1b276abe16d14e133f3f28d9c9e6bd68'
