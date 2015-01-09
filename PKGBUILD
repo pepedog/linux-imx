@@ -7,15 +7,15 @@
 
 buildarch=4
 
-pkgbase=linux-imx6-utilite-dt
-pkgname=('linux-imx6-utilite-dt' 'linux-headers-imx6-utilite-dt')
+pkgbase=linux-imx6
+pkgname=('linux-imx6' 'linux-headers-imx6')
 # pkgname=linux-custom       # Build kernel with a different name
 _commit=458352c292c34ce86659964aee832beaa09c5fda
 _srcname=linux-imx6-3.14-${_commit}
 _kernelname=${pkgname#linux}
 _basekernel=3.14
 pkgver=${_basekernel}.27
-pkgrel=1
+pkgrel=4
 cryptodev_commit=6aa62a2c320b04f55fdfe0ed015c3d9b48997239
 arch=('arm')
 url="http://www.kernel.org/"
@@ -35,7 +35,7 @@ md5sums=('ce27a8a8f5357c01090c6ba5895ed8e6'
          'ddf7876487c876f6676ef0e050e9d204'
          'SKIP'
          '1b276abe16d14e133f3f28d9c9e6bd68'
-         '962901197c0c52b7b6008a6df5fff6cb'
+         'f028149ce4b8ac84b400961dcd53325e'
          '8bf79a580704e8dab806f58043720a90'
          '6391a74bf1d451b74df6f189a25cf642'
          'a70798b63a0e7c3fb50a57ea1815d353')
@@ -53,18 +53,6 @@ msg2 "Copying aufs3 patches into the kernel source tree"
   cp -ru "${srcdir}/aufs3-standalone/include/uapi/linux/aufs_type.h" "${srcdir}/${_srcname}/include/linux/"
   cp -ru "${srcdir}/aufs3-standalone/include/uapi/linux/aufs_type.h" "${srcdir}/${_srcname}/include/uapi/linux/"
 
-  #Copy Utilite dts
-#  cp -ruv "${srcdir}/utilite-dtc/Makefile" "${srcdir}/${_srcname}/arch/arm/boot/dts/"
-#  cp -ruv "${srcdir}/utilite-dtc/imx6q-cm.dtsi" "${srcdir}/${_srcname}/arch/arm/boot/dts/"
-#  cp -ruv "${srcdir}/utilite-dtc/imx6q-sb-fx6x.dtsi" "${srcdir}/${_srcname}/arch/arm/boot/dts/"
-#  cp -ruv "${srcdir}/utilite-dtc/imx6qdl-cm.dtsi" "${srcdir}/${_srcname}/arch/arm/boot/dts/"
-#  cp -ruv "${srcdir}/utilite-dtc/imx6q-cm-fx6.dts" "${srcdir}/${_srcname}/arch/arm/boot/dts/"
-#  cp -ruv "${srcdir}/utilite-dtc/imx6q-sb-fx6.dtsi" "${srcdir}/${_srcname}/arch/arm/boot/dts/"
-#  cp -ruv "${srcdir}/utilite-dtc/imx6q-sbc-fx6.dts" "${srcdir}/${_srcname}/arch/arm/boot/dts/"
-#  cp -ruv "${srcdir}/utilite-dtc/imx6q-cm-fx6.dtsi" "${srcdir}/${_srcname}/arch/arm/boot/dts/"
-#  cp -ruv "${srcdir}/utilite-dtc/imx6q-sb-fx6m.dtsi" "${srcdir}/${_srcname}/arch/arm/boot/dts/"
-#  cp -ruv "${srcdir}/utilite-dtc/imx6q-sbc-fx6m.dts" "${srcdir}/${_srcname}/arch/arm/boot/dts/"
-
 msg2 "Applying aufs3 patches"
   patch -Np1 -i ../aufs3-standalone/aufs3-kbuild.patch
   patch -Np1 -i ../aufs3-standalone/aufs3-base.patch
@@ -77,7 +65,6 @@ msg2 "Applying aufs3 patches"
   patch -Np1 -i ${srcdir}/003_cec.patch
 
   cat "${srcdir}/config" > ./.config
-
 
   # add pkgrel to extraversion
   sed -ri "s|^(EXTRAVERSION =)(.*)|\1 \2-${pkgrel}|" Makefile
@@ -122,12 +109,12 @@ build() {
   make KERNEL_DIR="${srcdir}/${_srcname}"
 }
 
-package_linux-imx6-utilite-dt() {
+package_linux-imx6() {
   pkgdesc="The Linux Kernel and modules - i.MX6 processors for all utilite-i"
   depends=('coreutils' 'linux-firmware' 'module-init-tools>=3.16' 'mkinitcpio>=0.7')
   optdepends=('crda: to set the correct wireless channels of your country')
   provides=('kernel26' "linux=${pkgver}" 'aufs_friendly' 'cryptodev_friendly')
-  conflicts=('linux-trimslice' 'linux-omap')
+  conflicts=('linux-trimslice' 'linux-omap' 'linux-utilite' 'linux-imx6-cubox-dt' 'linux-imx6-cubox')
   backup=("etc/mkinitcpio.d/${pkgname}.preset")
   install=${pkgname}.install
 
@@ -138,11 +125,11 @@ package_linux-imx6-utilite-dt() {
   # get kernel version
   _kernver="$(make kernelrelease)"
 
-  mkdir -p "${pkgdir}"/{lib/modules,lib/firmware,boot}
+  mkdir -p "${pkgdir}"/{lib/modules,lib/firmware,boot,boot/dtbs}
   make INSTALL_MOD_PATH="${pkgdir}" modules_install
   cp arch/$KARCH/boot/zImage "${pkgdir}/boot/zImage"
   cp arch/$KARCH/boot/dts/*.dtb "${pkgdir}/boot"
-
+  cp arch/$KARCH/boot/dts/*.dtb "${pkgdir}/boot/dtbs"
 
   # set correct depmod command for install
   sed \
@@ -176,7 +163,7 @@ package_linux-imx6-utilite-dt() {
   mv "$pkgdir/lib" "$pkgdir/usr"
 }
 
-package_linux-headers-imx6-utilite-dt() {
+package_linux-headers-imx6() {
   pkgdesc="Header files and scripts for building modules for linux kernel - i.MX6 utilite-i"
   provides=("linux-headers=${pkgver}" "linux-headers-imx6-fsl=${pkgver}")
   conflicts=('linux-headers-omap' 'linux-headers-trimslice')
