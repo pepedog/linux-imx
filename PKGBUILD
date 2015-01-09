@@ -35,7 +35,7 @@ md5sums=('ce27a8a8f5357c01090c6ba5895ed8e6'
          'ddf7876487c876f6676ef0e050e9d204'
          'SKIP'
          '1b276abe16d14e133f3f28d9c9e6bd68'
-         'f0f19aca7ae4ec88a495d622da3047a4'
+         '962901197c0c52b7b6008a6df5fff6cb'
          '8bf79a580704e8dab806f58043720a90'
          '6391a74bf1d451b74df6f189a25cf642'
          'a70798b63a0e7c3fb50a57ea1815d353')
